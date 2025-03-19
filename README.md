@@ -1,3 +1,23 @@
+
+# My Portfolio - Next.js App
+
+A personal portfolio website built with Next.js, based on GreatStack's YouTube tutorial (https://www.youtube.com/watch?v=Y2kGqbzvAn4&t=4727s).
+
+## Features
+- Responsive design
+- Services showcase
+- Contact form
+- Modern UI with Tailwind CSS
+
+## Tech Stack
+- Next.js
+- React
+- Tailwind CSS
+
+
+## Credits
+- Tutorial: GreatStack
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
