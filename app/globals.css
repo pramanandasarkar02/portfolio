@@ -1,2 +1,16 @@
 @import "tailwindcss";
 
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+}
+
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+}
+
+.hacker {
+  --background: 0 0% 0%;
+  --foreground: 120 100% 50%;
+}
