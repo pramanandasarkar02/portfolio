@@ -14,3 +14,35 @@
   --background: 0 0% 0%;
   --foreground: 120 100% 50%;
 }
+
+/* In your global CSS */
+:root {
+  --light-border: 222.2 84% 4.9%;
+  --dark-border: 210 40% 98%;
+  --hacker-border: 120 100% 50%;
+  
+  --light-bg: 0 0% 100%;
+  --dark-bg: 222.2 84% 4.9%;
+  --hacker-bg: 0 0% 0%;
+}
+
+@layer utilities {
+  .border-light-border {
+    border-color: hsl(var(--light-border));
+  }
+  .border-dark-border {
+    border-color: hsl(var(--dark-border));
+  }
+  .border-hacker-border {
+    border-color: hsl(var(--hacker-border));
+  }
+  .bg-light-bg {
+    background-color: hsl(var(--light-bg));
+  }
+  .bg-dark-bg {
+    background-color: hsl(var(--dark-bg));
+  }
+  .bg-hacker-bg {
+    background-color: hsl(var(--hacker-bg));
+  }
+}
