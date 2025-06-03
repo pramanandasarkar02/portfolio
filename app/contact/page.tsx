@@ -2,9 +2,7 @@
 
 import React, { useState } from "react";
 
-type Props = {};
-
-const ContactPage = (props: Props) => {
+const ContactPage = () => {
   const [formData, setFormData] = useState({
     email: "",
     message: ""
@@ -26,106 +24,107 @@ const ContactPage = (props: Props) => {
     setSubmitStatus(null);
 
     try {
+      // IMPORTANT: Replace "/api/send-email" with your actual backend endpoint.
+      // This endpoint should handle sending the email securely.
+      // DO NOT send emails directly from client-side code in production.
       const response = await fetch("/api/send-email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          to: "pramanandasarkar02@gmail.com",
-          from: formData.email,
+          to: "pramanandasarkar02@gmail.com", // Your actual recipient email
+          from: formData.email, // Sender's email from the form
           subject: "New message from your portfolio",
-          text: formData.message
+          text: `From: ${formData.email}\n\nMessage:\n${formData.message}`
         }),
       });
 
       if (response.ok) {
         setSubmitStatus("success");
-        setFormData({ email: "", message: "" });
+        setFormData({ email: "", message: "" }); // Clear form on success
       } else {
         setSubmitStatus("error");
+        console.error("Failed to send message:", await response.text());
       }
     } catch (error) {
       setSubmitStatus("error");
+      console.error("Error submitting form:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
-      <div className="container mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold mb-8 text-center border-b-2 border-primary pb-2 inline-block">
+    <div className="min-h-screen bg-gray-900 text-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto bg-gray-800 rounded-lg shadow-xl p-8 border border-gray-700">
+        <h1 className="text-4xl font-bold mb-8 text-center text-blue-400 border-b-2 border-blue-600 pb-2 inline-block mx-auto">
           Contact Me
         </h1>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mt-8">
           {/* Contact Information */}
           <div className="space-y-6">
-            <h2 className="text-2xl font-semibold border-b pb-2 border-primary/30">
+            <h2 className="text-2xl font-semibold border-b pb-2 border-blue-500 text-gray-200">
               Get In Touch
             </h2>
-            
-            <div className="space-y-4">
+
+            <div className="space-y-4 text-gray-300">
               <div className="flex items-start">
                 <span className="font-medium w-24">Email:</span>
-                <a 
-                  href="mailto:pramanandasarkar02@gmail.com" 
-                  className="hover:text-primary transition-colors border-b border-dashed border-foreground/50 hover:border-primary"
+                <a
+                  href="mailto:pramanandasarkar02@gmail.com"
+                  className="text-blue-400 hover:underline transition-colors duration-200"
                 >
                   pramanandasarkar02@gmail.com
                 </a>
               </div>
-              
+
               <div className="flex items-start">
                 <span className="font-medium w-24">LinkedIn:</span>
-                <a 
-                  href="https://www.linkedin.com/in/pramanandasarkar02/" 
+                <a
+                  href="https://www.linkedin.com/in/pramanandasarkar02/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-primary transition-colors border-b border-dashed border-foreground/50 hover:border-primary"
+                  className="text-blue-400 hover:underline transition-colors duration-200"
                 >
                   linkedin.com/in/pramanandasarkar02
                 </a>
               </div>
-              
+
               <div className="flex items-start">
                 <span className="font-medium w-24">Phone:</span>
-                <a 
-                  href="tel:+8801814160814" 
-                  className="hover:text-primary transition-colors border-b border-dashed border-foreground/50 hover:border-primary"
+                <a
+                  href="tel:+8801814160814"
+                  className="text-blue-400 hover:underline transition-colors duration-200"
                 >
                   +880 1814 160814
                 </a>
               </div>
-              
+
               <div className="flex items-start">
                 <span className="font-medium w-24">Address:</span>
                 <span>Dhaka, Bangladesh</span>
               </div>
             </div>
 
-            {/* Theme-specific border example */}
-            <div className="mt-8 p-4 border-2 rounded-lg transition-all duration-300
-              border-light-border dark:border-dark-border hacker:border-hacker-border
-              bg-light-bg dark:bg-dark-bg hacker:bg-hacker-bg">
-              <h3 className="text-lg font-medium mb-2">Theme Preview</h3>
-              <p className="text-sm">
-                This border changes color based on your active theme. 
-                In hacker theme, it will glow green!
+            {/* Optional: Simple descriptive text */}
+            <div className="mt-8 p-4 border border-gray-700 rounded-lg bg-gray-900 text-gray-400 text-sm">
+              <p>
+                I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision. Feel free to reach out through any of the channels above or use the form!
               </p>
             </div>
           </div>
-          
+
           {/* Contact Form */}
           <div>
-            <h2 className="text-2xl font-semibold border-b pb-2 border-primary/30 mb-6">
+            <h2 className="text-2xl font-semibold border-b pb-2 mb-6 border-blue-500 text-gray-200">
               Send a Message
             </h2>
-            
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="email" className="block mb-2 font-medium">
+                <label htmlFor="email" className="block mb-2 font-medium text-gray-300">
                   Your Email
                 </label>
                 <input
@@ -136,12 +135,12 @@ const ContactPage = (props: Props) => {
                   onChange={handleChange}
                   required
                   placeholder="Enter your email"
-                  className="w-full px-4 py-2 rounded border border-foreground/20 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full px-4 py-2 rounded border border-gray-600 bg-gray-700 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
                 />
               </div>
-              
+
               <div>
-                <label htmlFor="message" className="block mb-2 font-medium">
+                <label htmlFor="message" className="block mb-2 font-medium text-gray-300">
                   Your Message
                 </label>
                 <textarea
@@ -152,24 +151,24 @@ const ContactPage = (props: Props) => {
                   required
                   rows={5}
                   placeholder="Write your message here..."
-                  className="w-full px-4 py-2 rounded border border-foreground/20 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full px-4 py-2 rounded border border-gray-600 bg-gray-700 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
                 ></textarea>
               </div>
-              
+
               <div className="flex items-center gap-4">
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-6 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
                 >
                   {isSubmitting ? "Sending..." : "Send Message"}
                 </button>
 
                 {submitStatus === "success" && (
-                  <span className="text-green-500">Message sent successfully!</span>
+                  <span className="text-green-500 text-sm font-medium">Message sent successfully!</span>
                 )}
                 {submitStatus === "error" && (
-                  <span className="text-red-500">Failed to send message. Please try again.</span>
+                  <span className="text-red-500 text-sm font-medium">Failed to send message. Please try again.</span>
                 )}
               </div>
             </form>
