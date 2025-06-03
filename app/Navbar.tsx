@@ -17,8 +17,10 @@ const Navbar = () => {
     { name: 'About', href: '/about' },
     { name: 'Skills', href: '/skills' },
     { name: 'Projects', href: '/projects' },
+    { name: 'Blog', href: '/blog'},
     { name: 'Resume', href: '/resume' },
     { name: 'Contact', href: '/contact' },
+    
   ];
 
   if (!mounted) {

@@ -4,7 +4,12 @@ type Props = {}
 
 const page = (props: Props) => {
   return (
-    <div>page</div>
+    <div>
+      resume web version
+      <div>
+        download the resume
+      </div>
+    </div>
   )
 }
 

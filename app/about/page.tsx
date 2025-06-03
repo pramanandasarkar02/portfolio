@@ -4,7 +4,13 @@ type Props = {}
 
 const page = (props: Props) => {
   return (
-    <div>page</div>
+    <div>
+      Hello, I am Pramananda Sarkar, 
+
+      {/* description about me */}
+
+
+    </div>
   )
 }
 
