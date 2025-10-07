@@ -9,37 +9,37 @@ const Navbar = (props: Props) => {
         <h1 className='font-bold text-xl'>Pramananda Sarkar</h1>
         <ul className='flex gap-10'>
                 <li>
-                    <Link href="./" >
+                    <Link href="./portfolio" >
                     Home
                     </Link>
                 </li>
                 <li>
-                    <Link href="./" >
+                    <Link href="./portfolio/resume" >
                     Resume
                     </Link>
                 </li>
                 <li>
-                    <Link href="./" >
+                    <Link href="./portfolio/experiences" >
                     Experiences
                     </Link>
                 </li>
                 <li>
-                    <Link href="./" >
+                    <Link href="./portfolio/skills" >
                     Skills
                     </Link>
                 </li>
                 <li>
-                    <Link href="./" >
+                    <Link href="./portfolio/projects" >
                     Projects
                     </Link>
                 </li>
                 <li>
-                    <Link href="./" >
+                    <Link href="./portfolio/researchs" >
                     Researchs
                     </Link>
                 </li>
                 <li>
-                    <Link href="./" >
+                    <Link href="./portfolio/contact" >
                     Contact
                     </Link>
                 </li>
