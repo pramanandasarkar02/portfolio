@@ -1,57 +1,16 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import { FaGithub, FaLinkedin, FaEnvelope, FaDownload, FaExternalLinkAlt, FaCode, FaServer, FaDatabase, FaBrain, FaGraduationCap, FaPhone, FaMapMarkerAlt } from 'react-icons/fa'
+import { FaGithub, FaLinkedin, FaEnvelope, FaDownload, FaExternalLinkAlt, FaCode, FaServer, FaDatabase, FaBrain, FaGraduationCap, FaPhone, FaMapMarkerAlt, FaBars, FaTimes } from 'react-icons/fa'
 import { SiRust, SiGo, SiPython, SiJavascript, SiTypescript, SiDocker, SiKubernetes, SiTensorflow, SiPytorch } from 'react-icons/si'
+import { Education, Experience, Project, Research, SkillCategory } from './types'
+import Navbar from './Navbar'
 
-interface Experience {
-  title: string
-  company: string
-  period: string
-  description: string
-  technologies: string[]
-}
 
-interface Project {
-  title: string
-  description: string
-  technologies: string[]
-  github: string
-  live: string | null
-  impact: string
-}
-
-interface Research {
-  title: string
-  venue: string
-  description: string
-  status: string
-  link: string | null
-}
-
-interface Skill {
-  name: string
-  icon?: React.ReactElement
-  level: number
-}
-
-interface SkillCategory {
-  category: string
-  icon: React.ReactElement
-  skills: Skill[]
-}
-
-interface Education {
-  degree: string
-  institution: string
-  period: string
-  location: string
-  description: string
-  achievements: string[]
-}
 
 const Portfolio: React.FC = () => {
   const [isVisible, setIsVisible] = useState<boolean>(false)
-  const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
+  const [activeSection, setActiveSection] = useState<string>('hero')
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false)
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 100)
@@ -59,13 +18,30 @@ const Portfolio: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY })
+    const handleScroll = () => {
+      const sections = ['hero', 'about', 'experience', 'skills', 'projects', 'research', 'contact']
+      const current = sections.find(section => {
+        const element = document.getElementById(section)
+        if (element) {
+          const rect = element.getBoundingClientRect()
+          return rect.top <= 100 && rect.bottom >= 100
+        }
+        return false
+      })
+      if (current) setActiveSection(current)
     }
 
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+      setMobileMenuOpen(false)
+    }
+  }
 
   const education: Education[] = [
     {
@@ -169,7 +145,7 @@ const Portfolio: React.FC = () => {
   const skillCategories: SkillCategory[] = [
     {
       category: "Programming Languages",
-      icon: <FaCode className="text-green-400" size={28} />,
+      icon: <FaCode className="text-green-400" size={24} />,
       skills: [
         { name: "Rust", icon: <SiRust />, level: 95 },
         { name: "Golang", icon: <SiGo />, level: 90 },
@@ -180,7 +156,7 @@ const Portfolio: React.FC = () => {
     },
     {
       category: "Systems & Infrastructure",
-      icon: <FaServer className="text-blue-400" size={28} />,
+      icon: <FaServer className="text-blue-400" size={24} />,
       skills: [
         { name: "Docker", icon: <SiDocker />, level: 90 },
         { name: "Kubernetes", icon: <SiKubernetes />, level: 85 },
@@ -191,7 +167,7 @@ const Portfolio: React.FC = () => {
     },
     {
       category: "Machine Learning & AI",
-      icon: <FaBrain className="text-purple-400" size={28} />,
+      icon: <FaBrain className="text-purple-400" size={24} />,
       skills: [
         { name: "TensorFlow", icon: <SiTensorflow />, level: 88 },
         { name: "PyTorch", icon: <SiPytorch />, level: 92 },
@@ -202,7 +178,7 @@ const Portfolio: React.FC = () => {
     },
     {
       category: "Databases & Storage",
-      icon: <FaDatabase className="text-orange-400" size={28} />,
+      icon: <FaDatabase className="text-orange-400" size={24} />,
       skills: [
         { name: "PostgreSQL", level: 90 },
         { name: "MongoDB", level: 85 },
@@ -213,117 +189,129 @@ const Portfolio: React.FC = () => {
     }
   ]
 
+  const github_url = "https://github.com/pramanandasarkar02"
+  const linkedin_url = "https://www.linkedin.com/in/pramanandasarkar02/"
+  const gmail = "pramanandasarkar02@gmail.com"
+
+  
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-gray-100">
-      {/* Hero Section */}
-      <section id="hero" className="relative flex flex-col md:flex-row min-h-screen bg-black text-white overflow-hidden">
-        {/* Cursor following light - hidden on mobile */}
-        <div
-          className="pointer-events-none fixed z-50 w-64 h-64 md:w-96 md:h-96 bg-green-500 rounded-full blur-3xl opacity-20 transition-opacity duration-300 hidden md:block"
-          style={{
-            left: mousePosition.x - 192,
-            top: mousePosition.y - 192,
-          }}
-        />
+      {/* Fixed Navigation */}
+      <Navbar />
 
-        {/* Left Side - Image */}
-        <div className="relative w-full md:w-2/5 lg:w-1/3 h-64 md:h-screen">
-          <div className={`relative w-full h-full transition-all duration-1200 ease-out ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}>
-            <img
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=1600&fit=crop"
-              alt="Profile"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-black" />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50" />
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-transparent opacity-60" />
-            <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-transparent opacity-60" />
-            <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-green-500 via-green-500 to-transparent opacity-60" />
-          </div>
+      {/* Hero Section - Compact */}
+      <section id="hero" className="relative pt-16 min-h-screen flex items-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(34, 197, 94, 0.15) 1px, transparent 0)`,
+            backgroundSize: '50px 50px'
+          }} />
         </div>
 
-        {/* Right Side - Content */}
-        <div className="relative flex-1 flex items-center justify-center p-6 md:p-16 lg:p-24">
-          <div className="max-w-2xl space-y-6 md:space-y-8">
-            <div className={`transition-all duration-1000 delay-300 ease-out ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-12'}`}>
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
-                Hello, I'm{' '}
-                <span className="text-green-400 inline-block hover:scale-105 transition-transform duration-300">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div className={`space-y-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-12'}`}>
+              <div className="inline-block px-4 py-2 bg-green-500/10 border border-green-500/30 rounded-full">
+                <span className="text-green-400 text-sm font-semibold">👋 Welcome to my portfolio</span>
+              </div>
+              
+              <h1 className="text-4xl md:text-6xl font-bold leading-tight">
+                I'm{' '}
+                <span className="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
                   Pramananda Sarkar
                 </span>
               </h1>
-            </div>
 
-            <div className={`transition-all duration-1000 delay-500 ease-out ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-12'}`}>
-              <p className="text-base md:text-xl lg:text-2xl leading-relaxed text-gray-300">
-                A passionate{' '}
-                <span className="font-semibold text-white border-b-2 border-green-500">Software Engineer</span>,{' '}
-                <span className="font-semibold text-white border-b-2 border-green-500">Scalable Systems Designer</span>,{' '}
-                <span className="font-semibold text-white border-b-2 border-green-500">ML/AI Researcher</span>, 
-                and lifelong learner exploring the intersection of math, science, and intelligent systems.
+              <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
+                A passionate <span className="text-green-400 font-semibold">Software Engineer</span> specializing in scalable systems, ML/AI research, and building innovative solutions at the intersection of technology and intelligence.
               </p>
+
+              <div className="flex flex-wrap gap-4">
+                <a
+                  href={github_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 bg-gray-800 border border-gray-700 hover:border-green-400 hover:bg-gray-700 transition-all duration-300"
+                >
+                  <FaGithub size={24} className="text-gray-300 hover:text-green-400" />
+                </a>
+                <a
+                  href={linkedin_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 bg-gray-800 border border-gray-700 hover:border-green-400 hover:bg-gray-700 transition-all duration-300"
+                >
+                  <FaLinkedin size={24} className="text-gray-300 hover:text-green-400" />
+                </a>
+                <a
+                  href={`mailto:${gmail}`}
+                  className="p-3 bg-gray-800 border border-gray-700 hover:border-green-400 hover:bg-gray-700 transition-all duration-300"
+                >
+                  <FaEnvelope size={24} className="text-gray-300 hover:text-green-400" />
+                </a>
+              </div>
+
+              <div className="flex flex-wrap gap-4 pt-4">
+                <button
+                  onClick={() => scrollToSection('projects')}
+                  className="px-8 py-3 bg-green-500 text-white font-semibold hover:bg-green-600 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/50"
+                >
+                  View My Work
+                </button>
+                <a
+                  href="/Resume.pdf"
+                  download
+                  className="px-8 py-3 border-2 border-green-500 text-green-400 font-semibold hover:bg-green-500 hover:text-white transition-all duration-300"
+                >
+                  Download Resume
+                </a>
+              </div>
             </div>
 
-            <div className={`flex gap-4 md:gap-6 transition-all duration-1000 delay-700 ease-out ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-12'}`}>
-              <a href="https://github.com/" target="_blank" rel="noopener noreferrer" className="group relative p-3 md:p-4 border-2 border-gray-700 hover:border-green-400 transition-all duration-300 hover:scale-110 bg-black/50">
-                <FaGithub size={24} className="md:w-8 md:h-8 text-white group-hover:text-green-400 transition-colors" />
-                <div className="absolute inset-0 bg-green-500 opacity-0 group-hover:opacity-10 transition-opacity" />
-              </a>
-              <a href="https://linkedin.com/" target="_blank" rel="noopener noreferrer" className="group relative p-3 md:p-4 border-2 border-gray-700 hover:border-green-400 transition-all duration-300 hover:scale-110 bg-black/50">
-                <FaLinkedin size={24} className="md:w-8 md:h-8 text-white group-hover:text-green-400 transition-colors" />
-                <div className="absolute inset-0 bg-green-500 opacity-0 group-hover:opacity-10 transition-opacity" />
-              </a>
-              <a href="mailto:example@email.com" className="group relative p-3 md:p-4 border-2 border-gray-700 hover:border-green-400 transition-all duration-300 hover:scale-110 bg-black/50">
-                <FaEnvelope size={24} className="md:w-8 md:h-8 text-white group-hover:text-green-400 transition-colors" />
-                <div className="absolute inset-0 bg-green-500 opacity-0 group-hover:opacity-10 transition-opacity" />
-              </a>
-            </div>
-
-            <div className={`transition-all duration-1000 delay-900 ease-out ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-12'}`}>
-              <button className="group relative px-6 md:px-10 py-3 md:py-4 border-2 border-green-500 text-green-400 font-semibold text-base md:text-lg overflow-hidden transition-all duration-300 hover:text-black hover:shadow-lg hover:shadow-green-500/50">
-                <span className="relative z-10">View My Work</span>
-                <div className="absolute inset-0 bg-green-500 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300" />
-              </button>
+            {/* Right - Profile Image */}
+            <div className={`relative transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12'}`}>
+              <div className="relative w-full max-w-md mx-auto">
+                <div className="aspect-square rounded-2xl overflow-hidden border-4 border-gray-700 shadow-2xl">
+                  <img
+                    src="profile.jpg"
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-green-500 rounded-full blur-3xl opacity-30" />
+                <div className="absolute -top-4 -left-4 w-32 h-32 bg-blue-500 rounded-full blur-3xl opacity-20" />
+              </div>
             </div>
           </div>
         </div>
-
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 md:w-96 md:h-96 bg-green-500 rounded-full blur-3xl opacity-10 animate-pulse" />
-        <div className="absolute bottom-1/3 right-1/4 w-48 h-48 md:w-80 md:h-80 bg-green-400 rounded-full blur-3xl opacity-5 animate-pulse" style={{ animationDelay: '1s' }} />
       </section>
 
-      {/* Education Section */}
-      <section id="education" className="relative py-16 md:py-24 px-6 md:px-20 bg-gradient-to-b from-gray-900 to-gray-800">
+      {/* About Section */}
+      <section id="about" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-800">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12 md:mb-16">
+          <div className="text-center mb-12">
             <div className="inline-block mb-4 px-4 py-1 bg-green-500/10 border border-green-500/30 rounded-full">
-              <span className="text-green-400 text-sm font-semibold">EDUCATION</span>
+              <span className="text-green-400 text-sm font-semibold">ABOUT ME</span>
             </div>
-            <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
-              Academic Background
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+              Who I Am
             </h2>
-            <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto">
-              Building a strong foundation in computer science and continuous learning.
-            </p>
           </div>
 
           {education.map((edu, index) => (
-            <div
-              key={index}
-              className="group relative bg-gray-900/50 border border-gray-700 hover:border-green-500/50 p-6 md:p-8 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10"
-            >
-              <div className="absolute top-0 left-0 w-1 h-0 bg-green-500 group-hover:h-full transition-all duration-500" />
-              
-              <div className="flex items-start gap-4 mb-4">
+            <div key={index} className="bg-gray-900/50 border border-gray-700 p-8 hover:border-green-500/50 transition-all duration-300">
+              <div className="flex items-start gap-4 mb-6">
                 <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
-                  <FaGraduationCap className="text-green-400 text-2xl md:text-3xl" />
+                  <FaGraduationCap className="text-green-400 text-2xl" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-xl md:text-2xl font-bold text-white mb-2">{edu.degree}</h3>
-                  <p className="text-green-400 text-base md:text-lg font-semibold">{edu.institution}</p>
-                  <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mt-2 text-sm md:text-base text-gray-400">
+                  <h3 className="text-2xl font-bold text-white mb-2">{edu.degree}</h3>
+                  <p className="text-green-400 text-lg font-semibold">{edu.institution}</p>
+                  <div className="flex flex-wrap gap-4 mt-2 text-sm text-gray-400">
                     <span className="font-mono">{edu.period}</span>
-                    <span className="hidden md:inline">•</span>
+                    <span>•</span>
                     <span>{edu.location}</span>
                   </div>
                 </div>
@@ -331,16 +319,13 @@ const Portfolio: React.FC = () => {
               
               <p className="text-gray-300 mb-6 leading-relaxed">{edu.description}</p>
               
-              <div className="space-y-2">
-                <h4 className="text-white font-semibold mb-3">Key Achievements:</h4>
-                <div className="grid md:grid-cols-2 gap-2">
-                  {edu.achievements.map((achievement, i) => (
-                    <div key={i} className="flex items-start gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-green-400 mt-2 flex-shrink-0" />
-                      <span className="text-gray-300 text-sm md:text-base">{achievement}</span>
-                    </div>
-                  ))}
-                </div>
+              <div className="grid md:grid-cols-2 gap-3">
+                {edu.achievements.map((achievement, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-green-400" />
+                    <span className="text-gray-300">{achievement}</span>
+                  </div>
+                ))}
               </div>
             </div>
           ))}
@@ -348,43 +333,38 @@ const Portfolio: React.FC = () => {
       </section>
 
       {/* Experience Section */}
-      <section id="experiences" className="relative py-16 md:py-24 px-6 md:px-20 bg-gray-800">
+      <section id="experience" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-900">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12 md:mb-16">
+          <div className="text-center mb-12">
             <div className="inline-block mb-4 px-4 py-1 bg-blue-500/10 border border-blue-500/30 rounded-full">
               <span className="text-blue-400 text-sm font-semibold">CAREER</span>
             </div>
-            <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              Professional Experience
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              Professional Journey
             </h2>
-            <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto">
-              Building scalable systems and pushing the boundaries of technology.
-            </p>
           </div>
 
-          <div className="space-y-6 md:space-y-8">
+          <div className="space-y-6">
             {experiences.map((exp, index) => (
               <div
                 key={index}
-                className="group relative bg-gray-900/50 border border-gray-700 hover:border-green-500/50 p-6 md:p-8 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10"
+                className="bg-gray-800/50 border-l-4 border-green-500 p-6 hover:bg-gray-800 transition-all duration-300"
               >
-                <div className="absolute top-0 left-0 w-1 h-0 bg-green-500 group-hover:h-full transition-all duration-500" />
-                
-                <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+                <div className="flex flex-col md:flex-row md:justify-between mb-4">
                   <div>
-                    <h3 className="text-xl md:text-2xl font-bold text-white mb-2">{exp.title}</h3>
-                    <p className="text-green-400 text-base md:text-lg font-semibold">{exp.company}</p>
+                    <h3 className="text-xl font-bold text-white mb-1">{exp.title}</h3>
+                    <p className="text-green-400 font-semibold">{exp.company}</p>
                   </div>
-                  <span className="text-gray-400 mt-2 md:mt-0 font-mono text-sm md:text-base">{exp.period}</span>
+                  <span className="text-gray-400 font-mono text-sm mt-2 md:mt-0">{exp.period}</span>
                 </div>
                 
-                <p className="text-gray-300 mb-6 leading-relaxed text-sm md:text-base">{exp.description}</p>
+                <p className="text-gray-300 mb-4 leading-relaxed">{exp.description}</p>
                 
                 <div className="flex flex-wrap gap-2">
                   {exp.technologies.map((tech, i) => (
                     <span
                       key={i}
-                      className="px-3 py-1 bg-gray-800 border border-gray-700 text-green-400 text-xs md:text-sm font-mono rounded hover:border-green-500 transition-colors"
+                      className="px-3 py-1 bg-gray-900 border border-gray-700 text-green-400 text-xs font-mono rounded"
                     >
                       {tech}
                     </span>
@@ -397,32 +377,26 @@ const Portfolio: React.FC = () => {
       </section>
 
       {/* Skills Section */}
-      <section id="skills" className="relative py-16 md:py-24 px-6 md:px-20 bg-gradient-to-b from-gray-800 to-gray-900 overflow-hidden">
-        <div className="absolute top-20 right-20 w-64 h-64 md:w-96 md:h-96 bg-purple-500 rounded-full blur-3xl opacity-5" />
-        <div className="absolute bottom-20 left-20 w-64 h-64 md:w-96 md:h-96 bg-blue-500 rounded-full blur-3xl opacity-5" />
-        
-        <div className="relative max-w-6xl mx-auto">
-          <div className="text-center mb-12 md:mb-16">
+      <section id="skills" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-800">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
             <div className="inline-block mb-4 px-4 py-1 bg-purple-500/10 border border-purple-500/30 rounded-full">
               <span className="text-purple-400 text-sm font-semibold">EXPERTISE</span>
             </div>
-            <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
               Technical Skills
             </h2>
-            <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto">
-              Proficient in modern technologies spanning multiple domains.
-            </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+          <div className="grid md:grid-cols-2 gap-6">
             {skillCategories.map((category, catIndex) => (
               <div
                 key={catIndex}
-                className="bg-gray-800/50 border border-gray-700 p-6 md:p-8 hover:border-purple-500/50 transition-all duration-300"
+                className="bg-gray-900/50 border border-gray-700 p-6 hover:border-purple-500/50 transition-all duration-300"
               >
-                <div className="flex items-center gap-4 mb-6">
+                <div className="flex items-center gap-3 mb-6">
                   {category.icon}
-                  <h3 className="text-xl md:text-2xl font-bold text-white">{category.category}</h3>
+                  <h3 className="text-xl font-bold text-white">{category.category}</h3>
                 </div>
                 
                 <div className="space-y-4">
@@ -430,10 +404,10 @@ const Portfolio: React.FC = () => {
                     <div key={skillIndex}>
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
-                          {skill.icon && <span className="text-lg md:text-xl">{skill.icon}</span>}
-                          <span className="text-gray-300 font-semibold text-sm md:text-base">{skill.name}</span>
+                          {skill.icon && <span className="text-lg">{skill.icon}</span>}
+                          <span className="text-gray-300 font-medium">{skill.name}</span>
                         </div>
-                        <span className="text-green-400 text-xs md:text-sm font-mono">{skill.level}%</span>
+                        <span className="text-green-400 text-sm font-mono">{skill.level}%</span>
                       </div>
                       <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
                         <div
@@ -451,70 +425,65 @@ const Portfolio: React.FC = () => {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="relative py-16 md:py-24 px-6 md:px-20 bg-gray-900">
+      <section id="projects" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-900">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12 md:mb-16">
+          <div className="text-center mb-12">
             <div className="inline-block mb-4 px-4 py-1 bg-orange-500/10 border border-orange-500/30 rounded-full">
               <span className="text-orange-400 text-sm font-semibold">PORTFOLIO</span>
             </div>
-            <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
               Featured Projects
             </h2>
-            <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto">
-              Impactful projects showcasing scalable architecture and innovation.
-            </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+          <div className="grid md:grid-cols-2 gap-6">
             {projects.map((project, index) => (
               <div
                 key={index}
-                className="group relative bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 p-6 md:p-8 hover:border-orange-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/20 overflow-hidden"
+                className="bg-gray-800/50 border border-gray-700 p-6 hover:border-orange-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/10"
               >
-                <div className="absolute top-0 right-0 w-24 h-24 md:w-32 md:h-32 bg-orange-500 rounded-full blur-3xl opacity-0 group-hover:opacity-10 transition-opacity duration-500" />
-                
-                <h3 className="text-xl md:text-2xl font-bold text-white mb-4 group-hover:text-orange-400 transition-colors">
+                <h3 className="text-xl font-bold text-white mb-3 hover:text-orange-400 transition-colors">
                   {project.title}
                 </h3>
                 
-                <p className="text-gray-300 mb-6 leading-relaxed text-sm md:text-base">{project.description}</p>
+                <p className="text-gray-300 mb-4 leading-relaxed text-sm">{project.description}</p>
                 
-                <div className="mb-6">
-                  <div className="inline-block px-3 py-1 bg-green-500/10 border border-green-500/30 rounded-full">
-                    <span className="text-green-400 text-xs md:text-sm font-semibold">{project.impact}</span>
-                  </div>
+                <div className="mb-4">
+                  <span className="inline-block px-3 py-1 bg-green-500/10 border border-green-500/30 rounded-full text-green-400 text-xs font-semibold">
+                    {project.impact}
+                  </span>
                 </div>
                 
-                <div className="flex flex-wrap gap-2 mb-6">
+                <div className="flex flex-wrap gap-2 mb-4">
                   {project.technologies.map((tech, i) => (
                     <span
                       key={i}
-                      className="px-3 py-1 bg-gray-900 border border-gray-600 text-orange-400 text-xs md:text-sm font-mono rounded"
+                      className="px-2 py-1 bg-gray-900 border border-gray-600 text-orange-400 text-xs font-mono rounded"
                     >
                       {tech}
                     </span>
                   ))}
                 </div>
                 
-                <div className="flex flex-wrap gap-4">
+                <div className="flex gap-4">
                   <a
                     href={project.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-gray-400 hover:text-green-400 transition-colors"
+                    className="flex items-center gap-2 text-gray-400 hover:text-green-400 transition-colors text-sm"
                   >
-                    <FaGithub size={18} />
-                    <span className="text-xs md:text-sm font-semibold">Source</span>
+                    <FaGithub size={16} />
+                    <span>Source</span>
                   </a>
                   {project.live && (
                     <a
                       href={project.live}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors"
+                      className="flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors text-sm"
                     >
-                      <FaExternalLinkAlt size={16} />
-                      <span className="text-xs md:text-sm font-semibold">Demo</span>
+                      <FaExternalLinkAlt size={14} />
+                      <span>Demo</span>
                     </a>
                   )}
                 </div>
@@ -525,31 +494,28 @@ const Portfolio: React.FC = () => {
       </section>
 
       {/* Research Section */}
-      <section id="research" className="relative py-16 md:py-24 px-6 md:px-20 bg-gradient-to-b from-gray-900 to-gray-800">
+      <section id="research" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-800">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12 md:mb-16">
+          <div className="text-center mb-12">
             <div className="inline-block mb-4 px-4 py-1 bg-cyan-500/10 border border-cyan-500/30 rounded-full">
               <span className="text-cyan-400 text-sm font-semibold">PUBLICATIONS</span>
             </div>
-            <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
               Research & Publications
             </h2>
-            <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto">
-              Contributing to cutting-edge research in ML and distributed systems.
-            </p>
           </div>
 
           <div className="space-y-6">
             {research.map((paper, index) => (
               <div
                 key={index}
-                className="group bg-gray-900/50 border-l-4 border-cyan-500 p-6 md:p-8 hover:bg-gray-800/50 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10"
+                className="bg-gray-900/50 border-l-4 border-cyan-500 p-6 hover:bg-gray-800/50 transition-all duration-300"
               >
-                <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
-                  <h3 className="text-lg md:text-xl font-bold text-white mb-2 md:mb-0 group-hover:text-cyan-400 transition-colors">
+                <div className="flex flex-col md:flex-row md:justify-between mb-3">
+                  <h3 className="text-lg font-bold text-white mb-2 md:mb-0 hover:text-cyan-400 transition-colors">
                     {paper.title}
                   </h3>
-                  <span className={`inline-block px-3 py-1 text-xs md:text-sm font-semibold rounded-full flex-shrink-0 ${
+                  <span className={`inline-block px-3 py-1 text-xs font-semibold rounded-full self-start ${
                     paper.status === 'Published' 
                       ? 'bg-green-500/10 text-green-400 border border-green-500/30' 
                       : 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/30'
@@ -558,16 +524,16 @@ const Portfolio: React.FC = () => {
                   </span>
                 </div>
                 
-                <p className="text-blue-400 font-semibold mb-4 text-sm md:text-base">{paper.venue}</p>
-                <p className="text-gray-300 leading-relaxed mb-4 text-sm md:text-base">{paper.description}</p>
+                <p className="text-blue-400 font-semibold mb-3 text-sm">{paper.venue}</p>
+                <p className="text-gray-300 leading-relaxed mb-3 text-sm">{paper.description}</p>
                 
                 {paper.link && (
                   <a
                     href={paper.link}
-                    className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors font-semibold text-sm md:text-base"
+                    className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors font-semibold text-sm"
                   >
                     <span>Read Paper</span>
-                    <FaExternalLinkAlt size={14} />
+                    <FaExternalLinkAlt size={12} />
                   </a>
                 )}
               </div>
@@ -576,133 +542,116 @@ const Portfolio: React.FC = () => {
         </div>
       </section>
 
-      {/* Contact Section - Enhanced */}
-      <section id="contact" className="relative py-16 md:py-24 px-6 md:px-20 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `linear-gradient(rgba(34, 197, 94, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 197, 94, 0.2) 1px, transparent 1px)`,
-            backgroundSize: '50px 50px'
-          }} />
-        </div>
-        
-        <div className="absolute top-10 left-10 w-48 h-48 md:w-96 md:h-96 bg-green-500 rounded-full blur-3xl opacity-10 animate-pulse" />
-        <div className="absolute bottom-10 right-10 w-48 h-48 md:w-96 md:h-96 bg-blue-500 rounded-full blur-3xl opacity-10 animate-pulse" style={{ animationDelay: '1.5s' }} />
-        
-        <div className="relative max-w-6xl mx-auto">
-          <div className="text-center mb-12 md:mb-16">
+      {/* Contact Section */}
+      <section id="contact" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-900">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
             <div className="inline-block mb-4 px-4 py-1 bg-green-500/10 border border-green-500/30 rounded-full">
               <span className="text-green-400 text-sm font-semibold">LET'S CONNECT</span>
             </div>
-            <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
               Get in Touch
             </h2>
-            <p className="text-base md:text-xl text-gray-300 max-w-2xl mx-auto">
-              Whether you want to collaborate on a project, discuss research opportunities, or just say hello, I'd love to hear from you!
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+              Open to collaboration, research opportunities, and interesting conversations.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 mb-12">
-            {/* Email Card */}
             <a
-              href="mailto:example@email.com"
+              href={`mailto:${gmail}`}
               className="group bg-gray-800/50 border border-gray-700 hover:border-green-500/50 p-6 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/20"
             >
               <div className="flex flex-col items-center text-center">
                 <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-full mb-4 group-hover:bg-green-500/20 transition-all">
-                  <FaEnvelope className="text-green-400 text-2xl md:text-3xl" />
+                  <FaEnvelope className="text-green-400 text-2xl" />
                 </div>
-                <h3 className="text-white font-bold mb-2 text-base md:text-lg">Email</h3>
-                <p className="text-gray-400 text-xs md:text-sm break-all">example@email.com</p>
+                <h3 className="text-white font-bold mb-2">Email</h3>
+                <p className="text-gray-400 text-sm break-all">{gmail}</p>
               </div>
             </a>
 
-            {/* Phone Card */}
             <a
               href="tel:+1234567890"
               className="group bg-gray-800/50 border border-gray-700 hover:border-blue-500/50 p-6 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20"
             >
               <div className="flex flex-col items-center text-center">
                 <div className="p-4 bg-blue-500/10 border border-blue-500/30 rounded-full mb-4 group-hover:bg-blue-500/20 transition-all">
-                  <FaPhone className="text-blue-400 text-2xl md:text-3xl" />
+                  <FaPhone className="text-blue-400 text-2xl" />
                 </div>
-                <h3 className="text-white font-bold mb-2 text-base md:text-lg">Phone</h3>
-                <p className="text-gray-400 text-xs md:text-sm">+1 (234) 567-890</p>
+                <h3 className="text-white font-bold mb-2">Phone</h3>
+                <p className="text-gray-400 text-sm">+1 (234) 567-890</p>
               </div>
             </a>
 
-            {/* Location Card */}
             <div className="group bg-gray-800/50 border border-gray-700 hover:border-purple-500/50 p-6 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20">
               <div className="flex flex-col items-center text-center">
                 <div className="p-4 bg-purple-500/10 border border-purple-500/30 rounded-full mb-4 group-hover:bg-purple-500/20 transition-all">
-                  <FaMapMarkerAlt className="text-purple-400 text-2xl md:text-3xl" />
+                  <FaMapMarkerAlt className="text-purple-400 text-2xl" />
                 </div>
-                <h3 className="text-white font-bold mb-2 text-base md:text-lg">Location</h3>
-                <p className="text-gray-400 text-xs md:text-sm">City, Country</p>
+                <h3 className="text-white font-bold mb-2">Location</h3>
+                <p className="text-gray-400 text-sm">Dhaka, Bangladesh</p>
               </div>
             </div>
           </div>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center items-center mb-12">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
             <a
-              href="mailto:example@email.com"
-              className="group relative px-8 md:px-10 py-3 md:py-4 bg-green-500 text-white font-bold text-base md:text-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/50 hover:scale-105 w-full sm:w-auto text-center"
+              href={`mailto:${gmail}`}
+              className="group relative px-8 py-3 bg-green-500 text-white font-bold overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-green-500/50 hover:scale-105 w-full sm:w-auto text-center"
             >
-              <span className="relative z-10 flex items-center justify-center gap-3">
-                <FaEnvelope size={20} />
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                <FaEnvelope size={18} />
                 Contact Me
               </span>
-              <div className="absolute inset-0 bg-green-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
             </a>
             
             <a
               href="/Resume.pdf"
               download
-              className="group relative px-8 md:px-10 py-3 md:py-4 border-2 border-green-500 text-green-400 font-bold text-base md:text-lg overflow-hidden transition-all duration-300 hover:text-black hover:shadow-lg hover:shadow-green-500/50 w-full sm:w-auto text-center"
+              className="group relative px-8 py-3 border-2 border-green-500 text-green-400 font-bold overflow-hidden transition-all duration-300 hover:bg-green-500 hover:text-white w-full sm:w-auto text-center"
             >
-              <span className="relative z-10 flex items-center justify-center gap-3">
-                <FaDownload size={18} />
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                <FaDownload size={16} />
                 Download Resume
               </span>
-              <div className="absolute inset-0 bg-green-500 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300" />
             </a>
           </div>
 
-          {/* Social Links */}
-          <div className="flex gap-4 md:gap-8 justify-center flex-wrap">
+          <div className="flex gap-6 justify-center">
             <a
-              href="https://github.com/"
+              href={github_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group p-4 bg-gray-800/50 border border-gray-700 hover:bg-gray-700/50 hover:border-green-500/50 transition-all duration-300 hover:scale-110"
+              className="p-4 bg-gray-800/50 border border-gray-700 hover:bg-gray-700/50 hover:border-green-500/50 transition-all duration-300"
             >
-              <FaGithub size={28} className="text-gray-300 group-hover:text-green-400 transition-colors" />
+              <FaGithub size={24} className="text-gray-300 hover:text-green-400" />
             </a>
             <a
-              href="https://linkedin.com/"
+              href={linkedin_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group p-4 bg-gray-800/50 border border-gray-700 hover:bg-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:scale-110"
+              className="p-4 bg-gray-800/50 border border-gray-700 hover:bg-gray-700/50 hover:border-blue-500/50 transition-all duration-300"
             >
-              <FaLinkedin size={28} className="text-gray-300 group-hover:text-blue-400 transition-colors" />
+              <FaLinkedin size={24} className="text-gray-300 hover:text-blue-400" />
             </a>
             <a
-              href="mailto:example@email.com"
-              className="group p-4 bg-gray-800/50 border border-gray-700 hover:bg-gray-700/50 hover:border-purple-500/50 transition-all duration-300 hover:scale-110"
+              href={`mailto:${gmail}`}
+              className="p-4 bg-gray-800/50 border border-gray-700 hover:bg-gray-700/50 hover:border-purple-500/50 transition-all duration-300"
             >
-              <FaEnvelope size={28} className="text-gray-300 group-hover:text-purple-400 transition-colors" />
+              <FaEnvelope size={24} className="text-gray-300 hover:text-purple-400" />
             </a>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-6 md:py-8 px-6 bg-black text-center text-gray-400 border-t border-gray-800">
+      <footer className="py-8 px-4 bg-black text-center text-gray-400 border-t border-gray-800">
         <div className="max-w-6xl mx-auto">
-          <p className="mb-2 text-sm md:text-base">
+          <p className="mb-2">
             © 2025 Pramananda Sarkar. Built with React and Tailwind CSS.
           </p>
-          <p className="text-xs md:text-sm text-gray-500">
+          <p className="text-sm text-gray-500">
             Designed with passion for creating impactful solutions.
           </p>
         </div>
